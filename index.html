@@ -66,6 +66,19 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
 .cmdline code{flex:1;overflow-x:auto;white-space:nowrap;font-family:Consolas,"Cascadia Mono",monospace;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:8px 10px}
 .copy{height:34px;padding:0 12px;border:1px solid var(--strong);background:var(--surface);color:var(--text);border-radius:4px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .copy:hover{background:var(--bg)}
+.plans{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:8px}
+@media(min-width:520px){.plans{grid-template-columns:1fr 1fr}}
+.plan{position:relative;display:block;margin:0!important;cursor:pointer}
+.plan input{position:absolute;opacity:0;width:1px;height:1px}
+.plan .pc{display:block;border:1px solid var(--border);border-radius:4px;padding:16px;background:var(--surface);transition:border-color 120ms var(--ease),background 120ms var(--ease)}
+.plan:hover .pc{background:var(--hover)}
+.plan input:checked+.pc{border:2px solid var(--primary);padding:15px;background:var(--surface2)}
+.plan input:focus-visible+.pc{outline:2px solid var(--primary);outline-offset:2px}
+.plan .pn{display:block;font-weight:600}
+.plan .pp{display:block;font-size:28px;line-height:36px;font-weight:600;margin:2px 0 6px}
+.plan .pd{display:block;font-weight:400;font-size:13px;line-height:18px;color:var(--text2)}
+.plan .pb{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:2px;background:var(--primary);color:#fff;margin-left:8px}
+.sect{font-size:14px;font-weight:600;margin:0 0 8px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -81,17 +94,27 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
       <div class="num" id="pNum">•••• •••• •••• ••••</div>
       <div class="row"><span id="pName">Имя Фамилия</span><span id="pExp">MM/YY</span></div>
     </div>
+    <div class="note">Демо-прототип. Реальные деньги не списываются.</div>
   </section>
 
   <section class="card" aria-live="polite">
     <div class="steps"><i class="on"></i><i></i><i></i><i></i></div>
 
     <div id="s1">
+      <p class="sect" id="planLbl">Выберите тариф</p>
+      <div class="plans" role="radiogroup" aria-labelledby="planLbl">
+        <label class="plan"><input type="radio" name="plan" value="10">
+          <span class="pc"><span class="pn">Малый тариф</span><span class="pp">10 $</span>
+          <span class="pd">Базовый вариант, активирует на год</span></span></label>
+        <label class="plan"><input type="radio" name="plan" value="45">
+          <span class="pc"><span class="pn">Большой тариф<span class="pb">Выгодно</span></span><span class="pp">45 $</span>
+          <span class="pd">Расширенный вариант.</span></span></label>
+      </div>
+      <p class="sect" style="margin-top:20px">Данные карты</p>
       <label for="num">Номер карты</label>
       <input id="num" name="cardnumber" inputmode="numeric" maxlength="23" placeholder="0000 0000 0000 0000" autocomplete="cc-number">
       <label for="name">Имя и фамилия</label>
-      <input id="name" name="ccname" placeholder="John Doe" autocomplete="cc-name">
-      <br><br>
+      <input id="name" name="ccname" placeholder="John doe" autocomplete="cc-name"><br><br>
       <div class="two">
         <div><label for="exp">Срок (MM/YY)</label><input id="exp" name="cc-exp" inputmode="numeric" maxlength="9" placeholder="12/28" autocomplete="cc-exp"></div>
         <div><label for="cvv">CVV</label><input id="cvv" name="cvc" inputmode="numeric" maxlength="4" type="password" placeholder="•••" autocomplete="cc-csc"></div>
@@ -121,9 +144,10 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
       <div class="ok">
         <div class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
         <div style="color:var(--text2)">Платёж подтверждён</div>
-        <div class="amount">45 $</div>
+        <div class="amount" id="rAmount">45 $</div>
         <div style="font-weight:600">Перевод выполнен</div>
         <div class="receipt">
+          <div><span>Тариф</span><span id="rPlan"></span></div>
           <div><span>Карта</span><span id="rCard"></span></div>
           <div><span>Получатель</span><span id="rName"></span></div>
           <div><span>Дата</span><span id="rDate"></span></div>
@@ -134,7 +158,7 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
       <button class="btn sec" id="again">Новый перевод</button>
     </div>
 
-    <div id="s5" class="hide keys">
+<div id="s5" class="hide keys">
       <h2>Активация Windows</h2>
       <p class="sub">Выполните команды в PowerShell или командной строке от имени администратора.</p>
 
@@ -172,6 +196,8 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
 <script>
 const $ = id => document.getElementById(id);
 let sentCode = null;
+const PLANS = {10:'Малый тариф', 45:'Большой тариф'};
+const plan = () => (document.querySelector('input[name=plan]:checked')||{}).value;
 const total = 5;
 function go(n){
   [1,2,3,4,5].forEach(i => $('s'+i).classList.toggle('hide', i !== n));
@@ -196,7 +222,8 @@ function toast(html){ const t=$('toast'); t.innerHTML=html; t.classList.add('sho
 
 $('b1').onclick = () => {
   const num = $('num').value.replace(/\s/g,''); let err='';
-  if (num.length !== 16) err='Номер карты — 16 цифр';
+  if (!plan()) err='Выберите тариф';
+  else if (num.length !== 16) err='Номер карты — 16 цифр';
   else if (!$('name').value.trim().includes(' ')) err='Введите имя и фамилию';
   else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test($('exp').value)) err='Срок карты в формате MM/YY';
   else if ($('cvv').value.length < 3) err='CVV — 3 цифры';
@@ -215,6 +242,7 @@ $('resend').onclick = sendCode;
 $('b3').onclick = () => {
   if ($('code').value !== sentCode) { $('e3').textContent='Неверный код'; return; }
   $('e3').textContent='';
+  $('rAmount').textContent = plan()+' $'; $('rPlan').textContent = PLANS[plan()];
   $('rCard').textContent='•••• '+$('num').value.slice(-4);
   $('rName').textContent=$('name').value;
   $('rDate').textContent=new Date().toLocaleString('ru-RU');
@@ -226,6 +254,7 @@ $('back4').onclick = () => go(4);
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => go(+b.dataset.back));
 $('again').onclick = () => {
   ['num','name','exp','cvv','email','code'].forEach(i => $(i).value='');
+  document.querySelectorAll('input[name=plan]').forEach(r => r.checked=false);
   $('pNum').textContent='•••• •••• •••• ••••'; $('pName').textContent='Имя Фамилия'; $('pExp').textContent='MM/YY';
   go(1);
 };
