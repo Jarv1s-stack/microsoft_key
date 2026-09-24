@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Перевод средств</title>
+<style>
+:root{--bg:#F3F3F3;--surface:#FFFFFF;--surface2:#F8F8F8;--hover:#F5F5F5;--border:#E5E5E5;--strong:#8A8A8A;--text:#1A1A1A;--text2:#5F5F5F;--primary:#0067B8;--primary-h:#005A9E;--primary-p:#004578;--ok:#107C10;--danger:#D13438;--shadow:0 2px 4px rgba(0,0,0,.08);--ease:cubic-bezier(.1,.9,.2,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1F1F1F;--surface:#252525;--surface2:#2D2D2D;--hover:#333;--border:#404040;--strong:#5A5A5A;--text:#fff;--text2:#D2D2D2;--primary:#4CC2FF;--primary-h:#71D0FF;--primary-p:#2AAAE2;--ok:#6CCB5F;--danger:#FF99A4}}
+:root[data-theme="dark"]{--bg:#1F1F1F;--surface:#252525;--surface2:#2D2D2D;--hover:#333;--border:#404040;--strong:#5A5A5A;--text:#fff;--text2:#D2D2D2;--primary:#4CC2FF;--primary-h:#71D0FF;--primary-p:#2AAAE2;--ok:#6CCB5F;--danger:#FF99A4}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:15px/22px "Segoe UI",Arial,Helvetica,sans-serif}
+header{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;position:sticky;top:0;z-index:5}
+header .in{width:100%;max-width:1200px;margin:auto;display:flex;align-items:center;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600}
+.logo i{width:20px;height:20px;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.logo i b{background:var(--primary)}
+.logo i b:nth-child(2){opacity:.7}.logo i b:nth-child(3){opacity:.5}.logo i b:nth-child(4){opacity:.3}
+main{max-width:960px;margin:0 auto;padding:32px 16px 48px;display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:900px){main{grid-template-columns:340px 1fr;align-items:start}}
+h1{font-size:28px;line-height:36px;font-weight:600;margin:0 0 4px}
+.sub{color:var(--text2);font-size:13px;line-height:18px;margin:0 0 20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:24px;box-shadow:var(--shadow)}
+.vcard{background:var(--primary);color:#fff;border-radius:8px;padding:20px;height:190px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,.14)}
+:root[data-theme="dark"] .vcard,.dk .vcard{color:#0b0b0b}
+.vcard .num{font-size:20px;letter-spacing:2px;font-family:Consolas,"Cascadia Mono",monospace}
+.vcard .row{display:flex;justify-content:space-between;font-size:12px;text-transform:uppercase}
+.vcard .top{font-weight:600;font-size:14px}
+.steps{display:flex;gap:4px;margin-bottom:20px}
+.steps i{flex:1;height:3px;background:var(--border)}
+.steps i.on{background:var(--primary)}
+label{display:block;font-size:14px;font-weight:600;margin:16px 0 6px}
+label:first-child{margin-top:0}
+input{width:100%;height:40px;padding:0 12px;border:1px solid var(--strong);border-radius:2px;font:inherit;background:var(--surface);color:var(--text)}
+input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{height:40px;padding:0 20px;border:1px solid transparent;border-radius:4px;font:inherit;font-weight:600;cursor:pointer;background:var(--primary);color:#fff;transition:background 120ms var(--ease);width:100%;margin-top:20px}
+:root[data-theme="dark"] .btn:not(.sec):not(.txt){color:#0b0b0b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn:not(.sec):not(.txt){color:#0b0b0b}}
+.btn:hover{background:var(--primary-h)}.btn:active{background:var(--primary-p)}
+.btn:focus-visible,.copy:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.btn.sec{background:var(--surface);color:var(--text);border-color:var(--strong)}
+.btn.sec:hover{background:var(--bg)}
+.btn.txt{background:transparent;color:var(--primary);margin-top:8px}
+.btn.txt:hover{text-decoration:underline}
+.btn:disabled{opacity:.6;cursor:default}
+.err{color:var(--danger);font-size:13px;min-height:18px;margin-top:10px}
+.hide{display:none!important}
+.code{text-align:center;letter-spacing:8px;font-size:22px;font-family:Consolas,monospace}
+.ok{text-align:center}
+.tick{width:56px;height:56px;border-radius:50%;background:var(--ok);display:grid;place-items:center;margin:0 auto 12px}
+.tick svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5}
+.amount{font-size:36px;line-height:44px;font-weight:600;margin:4px 0}
+.receipt{text-align:left;margin-top:16px;border-top:1px solid var(--border);padding-top:8px;font-size:14px}
+.receipt div{display:flex;justify-content:space-between;padding:6px 0}
+.receipt span:first-child{color:var(--text2)}
+.toast{position:fixed;left:16px;right:16px;top:calc(68px + env(safe-area-inset-top,0px));max-width:420px;margin:auto;background:var(--text);color:var(--bg);padding:12px 16px;border-radius:4px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.16);opacity:0;pointer-events:none;transition:opacity 180ms var(--ease);z-index:9}
+.toast.show{opacity:1}.toast b{font-family:Consolas,monospace;letter-spacing:3px}
+.note{font-size:12px;color:var(--text2);margin-top:16px}
+.keys h2{font-size:22px;line-height:28px;font-weight:600;margin:0 0 4px}
+.cmd{border:1px solid var(--border);border-radius:4px;background:var(--surface2);margin-top:12px;padding:12px 16px}
+.cmd .h{font-weight:600;font-size:14px;margin-bottom:4px}
+.cmd p{margin:6px 0 0;color:var(--text2);font-size:13px;line-height:18px}
+.cmdline{display:flex;gap:8px;align-items:center;margin-top:6px}
+.cmdline code{flex:1;overflow-x:auto;white-space:nowrap;font-family:Consolas,"Cascadia Mono",monospace;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:8px 10px}
+.copy{height:34px;padding:0 12px;border:1px solid var(--strong);background:var(--surface);color:var(--text);border-radius:4px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.copy:hover{background:var(--bg)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><div class="in"><div class="logo"><i aria-hidden="true"><b></b><b></b><b></b><b></b></i><span>MY BANK</span></div></div></header>
+
+<main>
+  <section aria-label="Карта">
+    <h1>Перевод средств</h1>
+    <p class="sub">Внутренняя валюта сайта</p>
+    <div class="vcard" role="img" aria-label="Предпросмотр карты">
+      <div class="top">MY BANK</div>
+      <div class="num" id="pNum">•••• •••• •••• ••••</div>
+      <div class="row"><span id="pName">Имя Фамилия</span><span id="pExp">MM/YY</span></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <div class="steps"><i class="on"></i><i></i><i></i><i></i></div>
+
+    <div id="s1">
+      <label for="num">Номер карты</label>
+      <input id="num" name="cardnumber" inputmode="numeric" maxlength="23" placeholder="0000 0000 0000 0000" autocomplete="cc-number">
+      <label for="name">Имя и фамилия</label>
+      <input id="name" name="ccname" placeholder="John Doe" autocomplete="cc-name">
+      <br><br>
+      <div class="two">
+        <div><label for="exp">Срок (MM/YY)</label><input id="exp" name="cc-exp" inputmode="numeric" maxlength="9" placeholder="12/28" autocomplete="cc-exp"></div>
+        <div><label for="cvv">CVV</label><input id="cvv" name="cvc" inputmode="numeric" maxlength="4" type="password" placeholder="•••" autocomplete="cc-csc"></div>
+      </div>
+      <div class="err" id="e1" role="alert"></div>
+      <button class="btn" id="b1">Продолжить</button>
+    </div>
+
+    <div id="s2" class="hide">
+      <label for="email">Email для подтверждения</label>
+      <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+      <div class="err" id="e2" role="alert"></div>
+      <button class="btn" id="b2">Отправить код</button>
+      <button class="btn txt" data-back="1">Назад</button>
+    </div>
+
+    <div id="s3" class="hide">
+      <p style="margin:0;color:var(--text2)">Мы отправили 6-значный код на <b id="mailShow" style="color:var(--text)"></b></p>
+      <label for="code">Код из письма</label>
+      <input id="code" name="otp" class="code" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code">
+      <div class="err" id="e3" role="alert"></div>
+      <button class="btn" id="b3">Подтвердить</button>
+      <button class="btn txt" id="resend">Отправить код ещё раз</button>
+    </div>
+
+    <div id="s4" class="hide">
+      <div class="ok">
+        <div class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <div style="color:var(--text2)">Платёж подтверждён</div>
+        <div class="amount">45 $</div>
+        <div style="font-weight:600">Перевод выполнен</div>
+        <div class="receipt">
+          <div><span>Карта</span><span id="rCard"></span></div>
+          <div><span>Получатель</span><span id="rName"></span></div>
+          <div><span>Дата</span><span id="rDate"></span></div>
+          <div><span>№ операции</span><span id="rId"></span></div>
+        </div>
+      </div>
+      <button class="btn" id="getKey">Получить ключ</button>
+      <button class="btn sec" id="again">Новый перевод</button>
+    </div>
+
+    <div id="s5" class="hide keys">
+      <h2>Активация Windows</h2>
+      <p class="sub">Выполните команды в PowerShell или командной строке от имени администратора.</p>
+
+      <div class="cmd"><div class="h">1. Установить ключ продукта</div>
+        <div class="cmdline"><code>slmgr /ipk XXXXX-XXXXX-XXXXX-XXXXX-XXXXX</code><button class="copy" data-c="slmgr /ipk XXXXX-XXXXX-XXXXX-XXXXX-XXXXX">Копировать</button></div>
+        <p>Вместо X подставьте свой лицензионный ключ.</p></div>
+
+      <div class="cmd"><div class="h">2. Активировать онлайн</div>
+        <div class="cmdline"><code>slmgr /ato</code><button class="copy" data-c="slmgr /ato">Копировать</button></div>
+        <p>Запускает активацию через серверы Microsoft.</p></div>
+
+      <div class="cmd"><div class="h">3. Проверить активацию</div>
+        <div class="cmdline"><code>slmgr /xpr</code><button class="copy" data-c="slmgr /xpr">Копировать</button></div>
+        <p>Показывает, активирована ли Windows и до какой даты.</p></div>
+
+      <button class="btn sec" id="back4">Назад к чеку</button>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let sentCode = null;
+const total = 5;
+function go(n){
+  [1,2,3,4,5].forEach(i => $('s'+i).classList.toggle('hide', i !== n));
+  document.querySelectorAll('.steps i').forEach((el,i) => el.classList.toggle('on', i < Math.min(n,4)));
+}
+['input','change'].forEach(ev => $('num').addEventListener(ev, e => {
+  const v = e.target.value.replace(/\D/g,'').slice(0,16);
+  e.target.value = v.replace(/(.{4})/g,'$1 ').trim();
+  $('pNum').textContent = v.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim();
+}));
+['input','change'].forEach(ev => $('name').addEventListener(ev, e => { e.target.value = e.target.value.toUpperCase(); $('pName').textContent = e.target.value || 'Имя Фамилия'; }));
+['input','change'].forEach(ev => $('exp').addEventListener(ev, e => {
+  let v = e.target.value.replace(/\D/g,'');
+  if (v.length === 6) v = v.slice(0,2) + v.slice(4);
+  v = v.slice(0,4);
+  if (v.length > 2) v = v.slice(0,2)+'/'+v.slice(2);
+  e.target.value = v; $('pExp').textContent = v || 'MM/YY';
+}));
+['cvv','code'].forEach(id => $(id).addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g,'')));
+
+function toast(html){ const t=$('toast'); t.innerHTML=html; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),5000); }
+
+$('b1').onclick = () => {
+  const num = $('num').value.replace(/\s/g,''); let err='';
+  if (num.length !== 16) err='Номер карты — 16 цифр';
+  else if (!$('name').value.trim().includes(' ')) err='Введите имя и фамилию';
+  else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test($('exp').value)) err='Срок карты в формате MM/YY';
+  else if ($('cvv').value.length < 3) err='CVV — 3 цифры';
+  $('e1').textContent = err; if (!err) go(2);
+};
+function sendCode(){
+  sentCode = String(Math.floor(100000 + Math.random()*900000));
+  toast('Демо-письмо. Ваш код: <b>'+sentCode+'</b>'); // на реальном сайте — запрос на сервер
+}
+$('b2').onclick = () => {
+  const m = $('email').value.trim();
+  if (!/^\S+@\S+\.\S+$/.test(m)) { $('e2').textContent='Введите корректный email'; return; }
+  $('e2').textContent=''; $('mailShow').textContent=m; sendCode(); go(3);
+};
+$('resend').onclick = sendCode;
+$('b3').onclick = () => {
+  if ($('code').value !== sentCode) { $('e3').textContent='Неверный код'; return; }
+  $('e3').textContent='';
+  $('rCard').textContent='•••• '+$('num').value.slice(-4);
+  $('rName').textContent=$('name').value;
+  $('rDate').textContent=new Date().toLocaleString('ru-RU');
+  $('rId').textContent='#'+Math.floor(Math.random()*9e8+1e8);
+  go(4);
+};
+$('getKey').onclick = () => go(5);
+$('back4').onclick = () => go(4);
+document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => go(+b.dataset.back));
+$('again').onclick = () => {
+  ['num','name','exp','cvv','email','code'].forEach(i => $(i).value='');
+  $('pNum').textContent='•••• •••• •••• ••••'; $('pName').textContent='Имя Фамилия'; $('pExp').textContent='MM/YY';
+  go(1);
+};
+document.querySelectorAll('.copy').forEach(b => b.onclick = async () => {
+  try { await navigator.clipboard.writeText(b.dataset.c); b.textContent='Скопировано'; }
+  catch(e){ b.textContent='Выделите вручную'; }
+  setTimeout(()=>b.textContent='Копировать',1500);
+});
+</script>
+</body>
+</html>
