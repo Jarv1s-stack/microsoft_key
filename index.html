@@ -140,7 +140,7 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
 
       <div class="cmd"><div class="h">1. KMS server</div>
         <div class="cmdline"><code>slmgr.vbs -upk</code><button class="copy" data-c="slmgr /ipk XXXXX-XXXXX-XXXXX-XXXXX-XXXXX">Копировать</button></div>
-        <p>Вместо X подставьте свой лицензионный ключ.</p></div>
+        <p>запускает KMS сервера для активаций</p></div>
 
       <div class="cmd"><div class="h">2. Установить ключ продукта</div>
         <div class="cmdline"><code>slmgr /ipk "W269N-WFGWX-YVC9B-4J6C9-T83GX"</code><button class="copy" data-c="slmgr /ato">Копировать</button></div>
@@ -148,7 +148,7 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
 
       <div class="cmd"><div class="h">3. Активировать онлайн</div>
         <div class="cmdline"><code>slmgr /skms kms.digiboy.ir</code><button class="copy" data-c="slmgr /xpr">Копировать</button></div>
-        <p>Показывает, активирована ли Windows и до какой даты.</p></div>
+        <p>подтверждает ключ</p></div>
       
       <div class="cmd"><div class="h">4. Проверить активацию</div>
         <div class="cmdline"><code>slmgr /ato</code><button class="copy" data-c="slmgr /xpr">Копировать</button></div>
@@ -156,7 +156,12 @@ input:focus{outline:2px solid rgba(0,103,184,.35);border-color:var(--primary)}
 
       <div class="cmd"><div class="h">5. Keys for Windows</div>
         <div class="cmdline"><code>7HNRX-D7KGG-3K4RQ-4WPJ4-YTDFH— Windows 10, 11 Home (Домашняя) <br>W269N-WFGWX-YVC9B-4J6C9-T83GX — Windows 10, 11 Professional (Профессиональная)<br>6TP4R-GNPTD-KYYHQ-7B7DP-J447Y — Windows 10, 11 Education</code><button class="copy" data-c="slmgr /xpr">Копировать</button></div>
-        <p>Показывает, активирована ли Windows и до какой даты.</p></div>
+        <p>Список ключей для разных версии windows</p></div>
+
+      <div class="cmd"><div class="h">6. Деактивация ключа Windows</div>
+        <div class="cmdline"><code>slmgr /upk</code><button class="copy" data-c="slmgr /xpr">Копировать</button></div>
+        <div class="cmdline"><code>slmgr /cpky</code><button class="copy" data-c="slmgr /xpr">Копировать</button></div>
+        <p>Это удалит установленный ключ продукта из текущей Windows.</p></div>
 
       <button class="btn sec" id="back4">Назад к чеку</button>
     </div>
